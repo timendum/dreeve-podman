@@ -1,0 +1,23 @@
+[Unit]
+Description=Dreeve (web)
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+ContainerName=dreeve
+Image=docker.io/robiningelbrecht/dreeve:latest
+EnvironmentFile=%h/dreeve/dreeve.env
+PublishPort=127.0.0.1:8081:8080
+Volume=%h/dreeve/storage/database:/var/www/storage/database:Z
+Volume=%h/dreeve/storage/files:/var/www/storage/files:Z
+Volume=%h/dreeve/storage/gear-maintenance:/var/www/storage/gear-maintenance:Z
+Volume=%h/dreeve/build:/var/www/build:Z
+Volume=%h/dreeve/watch:/var/www/watch:Z
+HealthCmd=curl -f http://localhost:2019/metrics
+HealthStartPeriod=60s
+
+[Service]
+Restart=unless-stopped
+
+[Install]
+WantedBy=default.target

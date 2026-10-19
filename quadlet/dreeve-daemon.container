@@ -1,0 +1,24 @@
+[Unit]
+Description=Dreeve (daemon)
+After=network-online.target dreeve.service
+Wants=network-online.target
+Requires=dreeve.service
+
+[Container]
+ContainerName=dreeve-daemon
+Image=docker.io/robiningelbrecht/dreeve:latest
+EnvironmentFile=%h/dreeve/dreeve.env
+Exec=bin/console app:daemon:run
+Volume=%h/dreeve/storage/database:/var/www/storage/database:Z
+Volume=%h/dreeve/storage/files:/var/www/storage/files:Z
+Volume=%h/dreeve/storage/gear-maintenance:/var/www/storage/gear-maintenance:Z
+Volume=%h/dreeve/build:/var/www/build:Z
+Volume=%h/dreeve/watch:/var/www/watch:Z
+HealthCmd=test -f /var/www/storage/database/dreeve.db
+HealthStartPeriod=5s
+
+[Service]
+Restart=unless-stopped
+
+[Install]
+WantedBy=default.target
